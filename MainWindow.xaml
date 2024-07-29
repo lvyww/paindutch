@@ -1,0 +1,267 @@
+﻿<Window x:Class="TypeB.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TypeB"
+        mc:Ignorable="d"
+      Title="Pain打器" Background="#505050"  Name="MainWin" Foreground="LightGray" xml:lang="zh-CN" Loaded="Window_Loaded" Closing="Window_Closing" Deactivated="MainWin_Deactivated">
+
+    <Window.Resources>
+
+        <RoutedUICommand x:Key="F3" Text="F3"/>
+        <RoutedUICommand x:Key="F4" Text="F4"/>
+        <!-- RoutedUICommand x:Key="F5" Text="F5"/ -->
+        <RoutedUICommand x:Key="CtrlE" Text="CtrlE"/>
+        <RoutedUICommand x:Key="CtrlL" Text="CtrlL"/>
+
+
+    </Window.Resources>
+
+
+    <Window.InputBindings>
+
+        <KeyBinding Gesture="F3"  Command="{StaticResource F3}" />
+        <KeyBinding Gesture="F4"  Command="{StaticResource F4}" />
+        <!-- KeyBinding Gesture="F5"  Command="{StaticResource F5}" /-->
+        <KeyBinding Gesture="Ctrl+E"  Command="{StaticResource CtrlE}" />
+        <KeyBinding Gesture="Ctrl+L"  Command="{StaticResource CtrlL}" />
+
+    </Window.InputBindings>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource F3}" Executed="InternalHotkeyF3"/>
+        <CommandBinding Command="{StaticResource F4}" Executed="InternalHotkeyF4"/>
+        <!-- CommandBinding Command="{StaticResource F5}" Executed="InternalHotkeyF5"/-->
+        <CommandBinding Command="{StaticResource CtrlE}" Executed="InternalHotkeyCtrlE"/>
+        <CommandBinding Command="{StaticResource CtrlL}" Executed="InternalHotkeyCtrlL"/>
+    </Window.CommandBindings>
+
+    
+    
+    <Grid Name="grid_a">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Name="top" Height="auto" />
+            <RowDefinition x:Name="content" Height="*" />
+            <RowDefinition x:Name="expander" Height="auto" />
+
+        </Grid.RowDefinitions>
+
+
+        <Grid  Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Name="stack1" Grid.Column="0" Orientation="Horizontal"  Margin="15,7,5,5" >
+                <Button  x:Name="BtnF3" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="重打F3" Click="BtnF3_Click" Margin="0,0,0,0" HorizontalAlignment="Center" Padding="10,2,10,2">
+                    <Button.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="5,0,0,5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="BtnCtrlE" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="剪贴版载文"  ToolTip="Ctrl+E" Click="BtnCtrlE_Click"  Margin="0,0,0,0" HorizontalAlignment="Center" Padding="5,2,5,2" >
+                    <Button.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="1"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="BtnF4" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="群载文F4"  Margin="0,0,0,0" HorizontalAlignment="Center" Padding="8,2,8,2" Click="BtnF4_Click" >
+                    <Button.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="1"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="BtnF5" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="选群▸"   Margin="0,0,0,0" HorizontalAlignment="Center" Padding="10,2,10,2" Click="BtnF5_Click" >
+                    <Button.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="0,5,5,0"/>
+                        </Style>
+                    </Button.Resources>
+
+                    <Button.ContextMenu>
+                        <ContextMenu Name="MenuQQGroup">
+                            <MenuItem Header="潜水" Click="MenuItem_Click" IsCheckable="True" ></MenuItem>
+                            <MenuItem Header="选择群"  IsCheckable="False"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <TextBox x:Name="TbClip" Text="" TextChanged="TbClip_TextChanged" Width="50" AcceptsReturn="True" Height ="10" Visibility="Hidden" Focusable="False"></TextBox>
+                
+       
+
+            </StackPanel>
+
+            <TextBlock  x:Name="TbkStatusTop"  Grid.Column="1" Margin="5,0,15,0" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" ></TextBlock>
+
+        </Grid>
+        
+
+
+
+        <Grid  Grid.Row="1" Height="auto"  Width="auto"  Name="grid_b">
+
+
+            <Grid  Name="grid_c" Height="auto"  Width="auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Margin="15,0,0,0"  SizeChanged="win_size_change">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="75*"></RowDefinition>
+                    <RowDefinition Height="5"></RowDefinition>
+                    <RowDefinition Height="25*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Canvas Name="CvAcc" Grid.Row="0"  Panel.ZIndex="10" Grid.Column="0"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="Transparent" Opacity="1" IsHitTestVisible="False" >
+                    <TextBlock x:Name="TbAcc" Text="" FontWeight="Bold"  />
+                </Canvas>
+
+                <Border Name="BdDisplay" Grid.Row="0"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="6" Background= "#EEDDBB">
+                   
+                    <ScrollViewer  x:Name="ScDisplay"  Grid.Row="0"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden"  IsDeferredScrollingEnabled="True">
+
+                        <WrapPanel  Focusable="False"  Margin="10,5,10,0" x:Name="TbDispay"  Grid.Row="0"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top"     Language="zh-CN"     ></WrapPanel>
+                    </ScrollViewer>
+                </Border>
+
+
+                  
+             
+
+                <ProgressBar x:Name="PgbTypingProgress"  Grid.Row="1" Height="5" BorderThickness="0" Foreground="#95b0e3" Background="{Binding ElementName=MainWin, Path=Background}"  HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Center"  Opacity="1"  />
+
+
+                <TextBox  Language="zh-CN" Grid.Row="2"  x:Name="TbxInput" Grid.Column="0"  IsReadOnly="True" Padding="{Binding ElementName=TbDispay, Path=Margin}" TextWrapping= "Wrap"     Background= "{Binding ElementName=BdDisplay, Path=Background}"     Panel.ZIndex="1" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Left" PreviewKeyUp="TbxInput_PreviewKeyUp"  PreviewTextInput="InputBox_TextInput" PreviewKeyDown="InputBox_PreviewKeyDown" TextChanged="TbxInput_TextChanged"    FontSize="{Binding ElementName=SldZoom, Path=Value}" >
+                    <TextBox.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </TextBox.Resources>
+                </TextBox> 
+                <Slider x:Name="SldZoom" Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Stretch" Opacity="0.5" Orientation="Vertical" Grid.Row="0"  Grid.RowSpan="3"    TickFrequency="0.5" Minimum="5" Maximum="70" SmallChange="0.5" LargeChange="2" ValueChanged="SldZoom_ValueChanged" Margin="0,0,5,0"  TickPlacement="TopLeft" IsSnapToTickEnabled="True" />
+
+            </Grid>
+
+
+
+
+
+        </Grid>
+
+
+        <DockPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="auto" Panel.ZIndex="1" Margin ="15,5,28,8">
+
+
+            <Button x:Name="BtnConfig" DockPanel.Dock="Left"  Content ="设置" HorizontalAlignment="Left" PreviewMouseUp="Tbk_PreviewMouseUp_1"  VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5,0,0,5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button x:Name="BtnTrainer" DockPanel.Dock="Left"  Content ="练单器" HorizontalAlignment="Left" Click="BtnTrainer_Click" VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0,0,0,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+
+
+            <!-- Button x:Name="Tbk" Content ="回放" Grid.Column ="1" HorizontalAlignment="Left" PreviewMouseUp="Tbk_PreviewMouseUp"  VerticalAlignment="Bottom" Margin="2,0,0,0" Padding="3,3,3,3" ></Button -->
+            <Button x:Name="BtnChangSheng"  DockPanel.Dock="Left" Content ="长生"  Click="BtnChangSheng_Click"  VerticalAlignment="Center" Margin="0,0,2,0" Padding="6,3,6,3" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0,5,5,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <ComboBox Name="CbFonts" Language="zh-CN"  DockPanel.Dock="Left" Text="选择字体" MaxWidth="120" FontSize="12" Height="19" VerticalAlignment="Center"  Margin="2,0,2,0" SelectionChanged="CbFonts_SelectionChanged">
+    
+            </ComboBox>
+
+            <Label Name="LbBlindType" DockPanel.Dock="Left"   FontSize="12"  VerticalAlignment="Center" Content="跟打" Foreground="{Binding ElementName=MainWin, Path=Foreground}" Margin="10,0,-1,0" />
+
+            <Slider DockPanel.Dock="Left" Panel.ZIndex="99" FontSize="12"  Width="60" Height="19" VerticalAlignment="Center" x:Name="SldBlind" Value="1" TickFrequency="1" IsSnapToTickEnabled="True" Minimum="1" Maximum="3"  Margin="0,-2,0,-2" TickPlacement="None"  Thumb.DragDelta="SldBlind_DragDelta"/>
+            <!--Label Name="LbLookType" DockPanel.Dock="Left"  Opacity="0.6" FontSize="12"  VerticalAlignment="Center" Content="看打" Foreground="{Binding ElementName=MainWin, Path=Foreground}" Margin="-3,0,10,0" /-->
+
+            <!-- CheckBox Name="ChkBlindType" DockPanel.Dock="Left"  FontSize="12"  VerticalAlignment="Center"  Margin="10,0,2,0" VerticalContentAlignment="Center" Click="ChkBlindType_Click"> <Label Content="盲打模式" Foreground="{Binding ElementName=MainWin, Path=Foreground}" VerticalAlignment="Center" Margin="-8,0,0,0"></Label> </CheckBox -->
+
+            <!-- CheckBox Name="ChkLookType" DockPanel.Dock="Left"  FontSize="12"  VerticalAlignment="Center"  Margin="5,0,2,0" VerticalContentAlignment="Center" Click="ChkLookType_Click"><Label Content="看打模式" Foreground="{Binding ElementName=MainWin, Path=Foreground}" VerticalAlignment="Center" Margin="-8,0,0,0" /></CheckBox -->
+
+
+
+
+
+
+
+
+
+
+
+
+            <Button x:Name="BtnNext" DockPanel.Dock="Right" Content ="&gt;" Width="25"    VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3" Click="BtnNext_Click" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0,5,5,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button x:Name="BtnSendArticle" DockPanel.Dock="Right" Content ="发文"  Click="BtnSendArticle_Click"  VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0,0,0,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button x:Name="BtnArticleManager" DockPanel.Dock="Right" Content ="文章管理" Width="auto" Click="BtnArticle_Click"  VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="0,0,0,0"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+
+            <Button x:Name="BtnPrev" DockPanel.Dock="Right" Content ="&lt;"  Width="25"    VerticalAlignment="Center" Margin="0,0,0,0" Padding="6,3,6,3"  Click="BtnPrev_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="5,0,0,5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Label DockPanel.Dock="Right"></Label>
+
+        </DockPanel>
+
+
+
+        <Expander x:Name="expd" Grid.Row="2"  HorizontalAlignment="Stretch" Expanded="expanded" Collapsed="expd_Collapsed" Foreground="LightGray" FlowDirection="RightToLeft" Margin ="1,5,1,5">
+            <Grid HorizontalAlignment="Stretch"  Height="120" FlowDirection="LeftToRight" Margin="15,15,10,10">
+                <TextBox Name="TbxResults" IsReadOnly="True" IsReadOnlyCaretVisible="True" Loaded="TbxResults_Loaded" Background="{Binding ElementName=MainWin,Path=Background}"  Foreground="{Binding ElementName=MainWin,Path=Foreground}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FontSize="15" >
+                    <TextBox.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="4"/>
+                        </Style>
+                    </TextBox.Resources>
+                </TextBox>
+
+            </Grid>
+
+
+        </Expander>
+
+
+    </Grid>
+</Window>

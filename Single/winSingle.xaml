@@ -1,0 +1,207 @@
+﻿<Window x:Class="TrainTiger.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrainTiger"
+        mc:Ignorable="d"
+        Title="TrainTiger" Background="#666666"  Foreground="LightGray" xml:lang="zh-CN" >
+
+    <Window.Resources>
+        <RoutedUICommand x:Key="Chongda" Text="Retype"/>
+    </Window.Resources>
+    <Window.Effect>
+        <DropShadowEffect  BlurRadius="20" RenderingBias ="Quality" ShadowDepth ="2" Color ="RosyBrown"/>
+    </Window.Effect>
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="Escape"  Command="{StaticResource Chongda}" />
+        <KeyBinding Gesture="F3"  Command="{StaticResource Chongda}" />
+    </Window.InputBindings>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource Chongda}" Executed="Retype"/>
+    </Window.CommandBindings>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition x:Name="cot" Height="*" />
+
+            <RowDefinition Height="auto" />
+
+        </Grid.RowDefinitions>
+
+
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal"  Margin="0,3,0,3" >
+            <ComboBox x:Name="FileSelector"  Height="auto" Width="auto" VerticalAlignment="Center" SelectionChanged="FileSelector_SelectionChanged" Grid.Column="0" Margin="10,0,5,0" HorizontalAlignment="Center" Padding="10,2,10,2"  />
+
+            <Button x:Name="Rst" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="重打 Esc/F3" Click="Rst_Click" Margin="5,0,5,0" HorizontalAlignment="Center" Padding="10,2,10,2"  />
+            <Button x:Name="Rstall" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="全体乱序" Margin="5,0,5,0" HorizontalAlignment="Center" Padding="10,2,10,2" Click="RandAllClick"  />
+            <Button x:Name="norm" Grid.Column="1" Height="auto" Width="auto" VerticalAlignment="Center" Content="恢复顺序" Margin="5,0,5,0" HorizontalAlignment="Center" Padding="10,2,10,2" Click="norm_Click"  />
+        </StackPanel>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="right">
+            <TextBlock  x:Name="hitrate" Foreground="LightGray" Text="击键 0.00" Grid.Column="6" Margin="5,0,15,0" HorizontalAlignment="right" VerticalAlignment="Center"  ></TextBlock>
+        </StackPanel>
+
+
+        <Grid  Grid.Row="1" Height="auto"  Width="auto" >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid   Height="auto"  Width="auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Margin="10,0,0,0" Background= "#EEDDBB" SizeChanged="win_size_change">
+                <Grid  x:Name="displays" Grid.Row="0" Height="auto"  Width="auto"  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="auto"  />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+
+
+                </Grid>
+                <TextBox Opacity="0.0"  x:Name="InputBox"  Grid.Column="1" Background= "#EEDDBB"  Width="{Binding ElementName=displays, Path=ActualWidth }"  FontFamily="Consolas" FontSize="23.5"  Panel.ZIndex="1" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Left" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="InputBox_TextInput" BorderThickness="0" PreviewKeyDown="InputBox_PreviewKeyDown"  />
+
+            </Grid>
+            <Slider x:Name="fsize" Orientation="Vertical" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Stretch"  Margin="0,0,5,0"  ValueChanged="FontSizeChanged" TickPlacement="TopLeft" IsSnapToTickEnabled="True" Opacity="0.5"/>
+
+
+
+
+
+        </Grid>
+
+
+        <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="auto" Panel.ZIndex="1" Margin ="0,5,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="stattxt" Text ="status" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="LightGray" ></TextBlock>
+            <Slider x:Name="sld" Grid.Column ="1"  HorizontalAlignment="Stretch" Margin="10,0,10,0" Grid.Row="3" VerticalAlignment="Center" ValueChanged="Slider_ValueChanged" TickPlacement="TopLeft" IsSnapToTickEnabled="True" Opacity="0.5"/>
+
+
+        </Grid>
+
+
+
+        <Expander x:Name="expd" Grid.Row="2"  HorizontalAlignment="Stretch" Expanded="expanded" Collapsed="expd_Collapsed" Foreground="LightGray" FlowDirection="RightToLeft" Margin ="1,5,1,5">
+            <Grid HorizontalAlignment="Stretch"  Height="120" FlowDirection="LeftToRight" Margin="20,15,0,10">
+                <Grid  HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="练习编码" BorderThickness="0.5"  VerticalAlignment="Stretch" Grid.Column="0" Width="auto" HorizontalAlignment="center">
+                        <Grid Margin="5,5,5,5" VerticalAlignment="Stretch" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <Slider x:Name="SldCode" Orientation="Vertical" TickFrequency="1" TickPlacement="BottomRight" Maximum="1" Minimum="0" IsSnapToTickEnabled="True" Grid.RowSpan="2" VerticalAlignment="Stretch" ValueChanged="SldCode_ValueChanged"  HorizontalAlignment="Center"  />
+                            <TextBlock Text="首码" Grid.Column="1" Grid.Row="0" Margin="2,0,2,0" VerticalAlignment="Top" />
+                            <TextBlock Text="全码" Grid.Column="1" Grid.Row="1" Margin="2,0,2,0" VerticalAlignment="Bottom" />
+
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Header="编码提示" BorderThickness="0.5" Margin="5,0,5,0" VerticalAlignment="Stretch"  Grid.Column="1"  Width="auto" HorizontalAlignment="center">
+                        <Grid Margin="5,5,5,5" VerticalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <Slider x:Name="Hint"  Orientation="Vertical" TickFrequency="1" TickPlacement="BottomRight" Maximum="2" Minimum="0" IsSnapToTickEnabled="True" Grid.RowSpan="3"  VerticalAlignment="Stretch" ValueChanged="change_hint" HorizontalAlignment="Center"  />
+                            <TextBlock Text="关闭" Grid.Column="1" Grid.Row="0" Margin="2,0,0,0"  VerticalAlignment="Top" PreviewMouseDown="hint_off" />
+                            <TextBlock Text="隔轮" Grid.Column="1" Grid.Row="1" Margin="2,0,2,0" VerticalAlignment="Center" PreviewMouseDown="hint_toggle" />
+                            <TextBlock Text="打开" Grid.Column="1" Grid.Row="2" Margin="2,0,2,0" VerticalAlignment="Bottom" PreviewMouseDown="hint_on" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox BorderThickness="0.5" Margin="5,0,5,0"  Grid.Column="2"  Width="auto" HorizontalAlignment="center" >
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="击键>" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,0" ></TextBlock>
+
+                                <TextBox x:Name="speed" InputMethod.IsInputMethodEnabled="False" Grid.Column="1" TextChanged="speed_TextChanged"  HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  ></TextBox>
+
+                            </StackPanel>
+                        </GroupBox.Header>
+
+                        <Slider x:Name="SldHit" Orientation="Vertical"  Value="{Binding ElementName=speed, Path=Text}" TickFrequency="0.5" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Maximum="15" Minimum="1"  Grid.RowSpan="3" VerticalAlignment="Stretch"  HorizontalAlignment="Center"  />
+
+                    </GroupBox>
+
+
+                    <GroupBox BorderThickness="0.5" Margin="5,0,5,0"  Grid.Column="3"  Width="auto" HorizontalAlignment="center">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="TbMaxCode" InputMethod.IsInputMethodEnabled="False"  Height="auto" Width="auto" VerticalAlignment="Center" Margin="5,0,0,0" TextChanged="TbMaxCode_TextChange" ></TextBox>
+                                <TextBlock  Foreground="LightGray" Text="码上屏" Height="auto" Width="auto" VerticalAlignment="Center" Margin="2,0,2,0" ></TextBlock>
+
+                            </StackPanel>
+                        </GroupBox.Header>
+
+                        <Slider x:Name="SldMaxCode" Orientation="Vertical"  Value="{Binding ElementName=TbMaxCode, Path=Text}" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Maximum="8" Minimum="1"  Grid.RowSpan="3"  VerticalAlignment="Stretch"  HorizontalAlignment="Center"  />
+
+                    </GroupBox>
+
+                    <GroupBox BorderThickness="0.5" Margin="5,0,5,0"  Grid.Column="4"  Width="auto" HorizontalAlignment="center">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="TextNum" InputMethod.IsInputMethodEnabled="False"  Height="auto" Width="auto" VerticalAlignment="Center" Margin="5,0,0,0" TextChanged="TextNum_TextChanged"></TextBox>
+                                <TextBlock  Foreground="LightGray" Text="字一组" Height="auto" Width="auto" VerticalAlignment="Center" Margin="2,0,2,0" ></TextBlock>
+
+                            </StackPanel>
+                        </GroupBox.Header>
+
+                        <Slider x:Name="SldNum" Orientation="Vertical"  Value="{Binding ElementName=TextNum, Path=Text}" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Maximum="50" Minimum="5"  Grid.RowSpan="3"  VerticalAlignment="Stretch"  HorizontalAlignment="Center" />
+
+                    </GroupBox>
+
+
+                    <GroupBox BorderThickness="0.5" Margin="5,0,5,0"  Grid.Column="5"  Width="auto" HorizontalAlignment="center">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock  Foreground="LightGray" Text="每轮降击" Height="auto" Width="auto" VerticalAlignment="Center" Margin="2,0,2,0" ></TextBlock>
+
+                                <TextBox x:Name="TextHitDecrease" InputMethod.IsInputMethodEnabled="False"  Height="auto" Width="auto" VerticalAlignment="Center" Margin="0,0,5,0" TextChanged ="TextHitDecrease_TextChanged"></TextBox>
+
+                            </StackPanel>
+                        </GroupBox.Header>
+
+                        <Slider x:Name="SldHitDecrease" Orientation="Vertical"  Value="{Binding ElementName=TextHitDecrease, Path=Text}" TickFrequency="0.01" IsSnapToTickEnabled="True" TickPlacement="BottomRight" Maximum="0.3" Minimum="0"  Grid.RowSpan="3"  VerticalAlignment="Stretch"  HorizontalAlignment="Center" />
+
+                    </GroupBox>
+
+                </Grid>
+
+            </Grid>
+
+
+        </Expander>
+
+
+    </Grid>
+</Window>
