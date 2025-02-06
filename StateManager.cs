@@ -22,12 +22,13 @@
         qq,
         clipboard,
         changeSheng,
+        jbs,
         book,
         trainer
     }
     static internal class StateManager
     {
-        static public string Version = "P240730";
+        static public string Version = "P250207";
         static public bool TextInput = false;
 
         static public bool ConfigLoaded = false;

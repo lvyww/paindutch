@@ -7,6 +7,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Windows.Threading;
 using System.Collections.Generic;
+using System.Drawing;
 
 
 namespace TypeB
@@ -425,6 +426,15 @@ namespace TypeB
             SetClipboardData(13, Marshal.StringToHGlobalUni(text));
             CloseClipboard();
         }
+        internal static void Win32SetTextAndImage(string text)
+        {
+            if (!OpenClipboard(IntPtr.Zero)) { Win32SetText(text); return; }
+            EmptyClipboard();
+            SetClipboardData(13, Marshal.StringToHGlobalUni(text));
+            CloseClipboard();
+            Bitmap bmp = null;
+        }
+
 
         internal static string Win32GetText(int format)
         {

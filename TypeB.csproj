@@ -94,7 +94,6 @@
     <Compile Include="Article\WinArticle.xaml.cs">
       <DependentUpon>WinArticle.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ChangSheng.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CounterLog.cs" />
@@ -105,19 +104,21 @@
     <Compile Include="FileComparer.cs" />
     <Compile Include="GroupedDiffRes.cs" />
     <Compile Include="IntStringDict.cs" />
+    <Compile Include="Net\ChangSheng.cs" />
+    <Compile Include="Net\JBS.cs" />
+    <Compile Include="Net\Sender.cs" />
+    <Compile Include="Net\Util.cs" />
     <Compile Include="PartSplitedDiffRes.cs" />
     <Compile Include="PathNode.cs" />
     <Compile Include="QQHelper.cs" />
     <Compile Include="RetypeCouner.cs" />
     <Compile Include="Score.cs" />
-    <Compile Include="Sender.cs" />
     <Compile Include="Snake.cs" />
     <Compile Include="SplitedDiffRes.cs" />
     <Compile Include="StateManager.cs" />
     <Compile Include="StringToFontFamily.cs" />
     <Compile Include="TextInfo.cs" />
     <Compile Include="TxtConfig.cs" />
-    <Compile Include="Util.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="WinConfig\WinConfig.xaml.cs">
       <DependentUpon>WinConfig.xaml</DependentUpon>

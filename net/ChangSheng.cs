@@ -8,8 +8,6 @@ namespace Net
     public class ChangSheng
     {
         private string token = "";
-        private string userName;
-        private string password;
 
         private int articleId = 666;
         private string typeDate = "1970-01-01";
@@ -20,12 +18,10 @@ namespace Net
 
         public ChangSheng(string userName, string password)
         {
-            this.userName = userName;
-            this.password = password;
-            InitToken();
+            InitToken(userName, password);
         }
 
-        private void InitToken()
+        private void InitToken(string userName, string password)
         {
             string url = "https://cl.tyu.wiki/home/login/" + userName + "/" + password;
             Dictionary<string, object> dictionary = Util.DoPost<string, object>(url);
@@ -48,7 +44,7 @@ namespace Net
                 articleId = Convert.ToInt32(((JObject)dictionary["result"])["articleId"].ToString());
                 typeDate = ((JObject)dictionary["result"])["holdDate"].ToString();
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 return article;
             }
@@ -81,9 +77,9 @@ namespace Net
             keyMethod = Math.Round(keyMethod, 2);
             keySpeed = Math.Round(keySpeed, 2);
             speed = Math.Round(speed, 2);
-            time = Math.Round(time, 2);
+            time = Math.Round(time, 3);
             wordRate = Math.Round(wordRate, 2);
-            
+
             StringBuilder sb = new StringBuilder();
             sb.Append("{");
             sb.Append("\"articleId\":").Append(articleId).Append(",");

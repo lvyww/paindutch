@@ -61,126 +61,11 @@ namespace TypeB
 
         public static bool IsNewQQ = false;
 
-        
-        public static void ReportNew ()
-        {
-            string MainTitle = "QQ";
-            var q = root.GetRootElement().FindFirst(TreeScope.TreeScope_Children, root.CreatePropertyCondition(UIA_PropertyIds.UIA_NamePropertyId, MainTitle));
-            if (q == null || q.CurrentClassName == "TXGuiFoundation")
-                return;
-
-            if (null == q.FindFirst(TreeScope.TreeScope_Children, root.CreatePropertyCondition(UIA_PropertyIds.UIA_ControlTypePropertyId, UIA_ControlTypeIds.UIA_DocumentControlTypeId)))
-            {
-                var wp = q.GetCurrentPattern(UIA_PatternIds.UIA_WindowPatternId) as IUIAutomationWindowPattern;
-                wp.SetWindowVisualState(WindowVisualState.WindowVisualState_Normal);
-                q.SetFocus();
-
-                Win32.Delay(50);
-            }
-
-
-            var grouplist = q.FindFirst(TreeScope.TreeScope_Descendants, root.CreatePropertyCondition(UIA_PropertyIds.UIA_NamePropertyId, "会话列表"));   //找不到消息区，aeMessage值为空
-
-
-
-            if (grouplist == null)
-                return;
-
-
-            var groups = grouplist.FindAll(TreeScope.TreeScope_Children, root.CreateOrCondition(root.CreatePropertyCondition(UIA_PropertyIds.UIA_ControlTypePropertyId, UIA_ControlTypeIds.UIA_WindowControlTypeId), root.CreatePropertyCondition(UIA_PropertyIds.UIA_ControlTypePropertyId, UIA_ControlTypeIds.UIA_GroupControlTypeId)));
-            if (groups.Length > 0)
-            {
-                for (int i = 0; i < groups.Length; i++)
-                {
-
-                    string s = groups.GetElement(i).CurrentName;
-                    string title = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                    AvailTitle.Add(title);
-       //             if (!titles.Contains(title))
-        //                titles.Enqueue(title);//窗口标题
-                }
-            }
-
-        }
-        public static bool Report(int hwnd, int lParam)
-        {
- 
-
-                var r = new Regex(@"QQ20\d{2}");
-                var ex = new[]
-                    {
-                        "QQ",
-                        "TXMenuWindow",
-                        "FaceSelector",
-                        "TXFloatingWnd",
-                        "腾讯",
-                        "消息盒子",
-                        "来自",
-                        "分类推荐",
-                        "更换房间头像",
-                        "网络设置",
-                         "验证消息",
-                        "图片查看",
-                        "消息管理器",
-                        "QQ数据线"
-                    };
-                var s = new StringBuilder(512);
-                GetWindowText(hwnd, s, s.Capacity);
-                var title = s.ToString();
-                if (!r.IsMatch(title) && !ex.Contains(title) && !string.IsNullOrEmpty(title))
-                {
-                    var g = new StringBuilder(512);
-                    GetClassName(hwnd, g, 256);
-                    if (g.ToString() == "TXGuiFoundation")
-                    {
-
-                        AvailTitle.Add(title);
-        //                if (!titles.Contains(title))
-         //                   titles.Enqueue(title);//窗口标题
-
-                    }
-                }
-            
-
- 
-
-            return true;
-        }
 
 
 
         static CUIAutomation root = new CUIAutomation();
-        /*
-        public static string GetQuName()
-        {
 
-            AvailTitle.Clear();
-
-            UpdateIsNewQQ();
-
-            if (IsNewQQ)
-                ReportNew();
-            else
-                EnumWindows(Report, 0);
-
-            if (!titles.Contains(""))
-               titles.Enqueue("");//窗口标题
-
-            AvailTitle.Add("");
-
-            while (titles.Count > 0)
-            {
-                string t = titles.Dequeue();
-                if (AvailTitle.Contains(t))
-                    return t;
-            }
-            
-
-            return "";
-
-
-        }
-        */
         static List<string> QunList = new List<string>();
      
         static public List<string> GetQunList()
@@ -263,6 +148,7 @@ namespace TypeB
             var ex = new[]
                 {
                         "QQ",
+                        "QQ音乐",
                         "TXMenuWindow",
                         "FaceSelector",
                         "TXFloatingWnd",
@@ -275,12 +161,15 @@ namespace TypeB
                          "验证消息",
                         "图片查看",
                         "消息管理器",
-                        "QQ数据线"
+                        "QQ数据线",
+                        "播放队列",
+                        
                     };
+
             var s = new StringBuilder(512);
             GetWindowText(hwnd, s, s.Capacity);
             var title = s.ToString();
-            if (!r.IsMatch(title) && !ex.Contains(title) && !string.IsNullOrEmpty(title))
+            if (!r.IsMatch(title) && !ex.Contains(title) && !string.IsNullOrEmpty(title) && !title.Contains(" - "))
             {
                 var g = new StringBuilder(512);
                 GetClassName(hwnd, g, 256);

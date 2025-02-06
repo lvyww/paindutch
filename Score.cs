@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Globalization;
 using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
+using System.Linq;
 
 namespace TypeB
 {
@@ -351,6 +352,9 @@ static internal class Score
                 int semi = t.LastIndexOf(":");
                 if (t.Length > semi + 6)
                     t = t.Substring(0,semi + 6);
+
+                if (t.Length > 3 && t.Substring(0, 3) == "00:")
+                    t = t.Substring(3);
                 report.Add("用时" + t);//(@"hh\:mm\:ss"))
             }
 

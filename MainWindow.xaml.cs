@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
+
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -1037,7 +1037,7 @@ namespace TypeB
 
             UpdateTypingStat();
 
-            if (StateManager.txtSource == TxtSource.changeSheng || Config.GetBool("禁止F3重打"))
+            if (StateManager.txtSource == TxtSource.changeSheng ||  StateManager.txtSource == TxtSource.jbs || Config.GetBool("禁止F3重打"))
                 return;
 
 
@@ -1168,13 +1168,15 @@ namespace TypeB
                 "字体大小", "30",
               "窗体背景色", "505050",
             "窗体字体色", "D3D3D3",
-            "跟打区背景色", "C0C0A0",
+            "跟打区背景色", "C5B28F",
             "跟打区字体色", "000000",
             "打对色", "95b0e3",
             "打错色", "FF6347",
              "显示进度条", "是",
-            "长流用户名", "b3",
-            "长流密码", "b3",
+            "长流用户名", "",
+            "长流密码", "",
+             "极速用户名", "",
+            "极速密码", "",
             "禁止F3重打", "否",
             "增强键准提示", "否",
                 "盲打模式", "否",
@@ -1706,6 +1708,15 @@ namespace TypeB
 
             }
 
+            if (StateManager.txtSource == TxtSource.jbs) //锦标赛
+            {
+           //     cs.SendScore((int)Score.GetBacks(), (int)Score.GetCorrection(), Score.GetAccuracy() * 100.0, Score.KPW, Score.LRRatio * 100.0, Score.HitRate, Score.Wrong, Score.TotalWordCount, Score.GetChoose(), Score.GetValidSpeed(), Score.Time.TotalSeconds, Score.GetCiRatio() * 100.0);
+             //   jbs.SendScore(Score.GetValidSpeed().ToString("F2"), Score.HitRate.ToString("F2"), Score.KPW.ToString("F2"), Score.Time.TotalSeconds.ToString("F2"), Score.GetCorrection().ToString("F0"), "0", Score.GetHit().ToString("F0"), Score.GetAccuracy().ToString("F2"), Score.GetCiRatio().ToString("F2"), Score.Wrong.ToString("F0"));
+                jbs.SendScore(Score.GetValidSpeed(), Score.HitRate, Score.KPW, Score.Time, (int)Score.GetCorrection(), 0, (int)Score.GetHit(), Score.GetAccuracy(), Score.GetCiRatio(), Score.Wrong, Config.GetString("成绩签名"));
+
+
+            }
+
 
             if (StateManager.txtSource == TxtSource.book) //书籍
             {
@@ -1939,7 +1950,11 @@ namespace TypeB
             if (QQGroupName != "")
                 QQHelper.SendQQMessageD(QQGroupName, lastResult, content2, 150, this);
             else
+            {
+                Win32.Win32SetText(lastResult);
                 FocusInput();
+            }
+
 
         //    LoadText(content2, RetypeType.first, TxtSource.book);
 
@@ -2106,7 +2121,7 @@ namespace TypeB
 
 
             //回车暂停
-            if (e.Key == Key.Enter && StateManager.txtSource != TxtSource.changeSheng)
+            if (e.Key == Key.Enter && StateManager.txtSource != TxtSource.changeSheng && StateManager.txtSource != TxtSource.jbs)
             {
                 if (StateManager.typingState == TypingState.typing)
                 {
@@ -2798,7 +2813,8 @@ namespace TypeB
 
             //开始检测
             int index = -1;
-            for (int i = lines.Length - 1; i > 0; i--)
+            for (int i = 0; i< lines.Length; i++)
+           // for (int i = lines.Length - 1; i > 0; i--)
             {
                 if (r.Match(lines[i]).Success)
                 {
@@ -2838,8 +2854,8 @@ namespace TypeB
             mouse_event(MouseEventFlag.LeftDown, 0, 0, 0, IntPtr.Zero);
             mouse_event(MouseEventFlag.LeftUp, 0, 0, 0, IntPtr.Zero);
             Win32.Delay(10);
-            Win32.CtrlA();
-            Win32.Delay(10);
+//            Win32.CtrlA();
+//            Win32.Delay(10);
             Win32.CtrlC();
             Win32.Delay(10);
             LoadTextFromClipBoard();
@@ -3586,9 +3602,7 @@ namespace TypeB
             {
 
 
-                //    ChkBlindType.IsChecked = false;
-                ///    ChkLookType.IsChecked = false;
-                ///    
+  
                 SldBlind.Value = 1;
                 SldBindLookUpdate();
                 
@@ -3596,6 +3610,23 @@ namespace TypeB
             }
 
 
+        }
+
+        JBS jbs = null;
+        private void BtnJbs_Click(object sender, RoutedEventArgs e) //锦标赛
+        {
+            jbs = new JBS(Config.GetString("极速用户名"), Config.GetString("极速密码"));
+            string article = jbs.GetArticle();
+            if (article != null && article.Length > 0)
+            {
+
+
+     
+                SldBlind.Value = 1;
+                SldBindLookUpdate();
+
+                LoadText(article, RetypeType.first, TxtSource.jbs);
+            }
         }
 
         public WinArticle winArticle;// = new WinArticle();
@@ -3626,7 +3657,7 @@ namespace TypeB
 
         private void MainWin_Deactivated(object sender, EventArgs e)
         {
-            if (StateManager.txtSource != TxtSource.changeSheng)
+            if (StateManager.txtSource != TxtSource.changeSheng && StateManager.txtSource != TxtSource.jbs)
             {
                 if (StateManager.typingState == TypingState.typing)
                 {
@@ -3967,5 +3998,7 @@ namespace TypeB
                 TbxInput.Focus();
             }
         }
+
+
     }
 }

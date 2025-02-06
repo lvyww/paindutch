@@ -44,14 +44,43 @@ namespace Net
             }
         }
 
-        public static string Post(string url, Dictionary<string, string> content)
+        public static string Post(string url, Dictionary<string, string> headers, Dictionary<string, string> content)
+        {
+            url = Sender.FixUrl(url);
+            // 添加header
+            foreach (KeyValuePair<string, string> kvp in headers)
+            {
+                client.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
+            }
+
+            Task<HttpResponseMessage> task = Sender.client.PostAsync(url,
+                (HttpContent)new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)content));
+            try
+            {
+                return Sender.RunTask(task);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                // 还原header
+                foreach (KeyValuePair<string, string> kvp in headers)
+                {
+                    client.DefaultRequestHeaders.Remove(kvp.Key);
+                }
+            }
+        }
+
+        public static string PostAddHeaders(string url, Dictionary<string, string> content)
         {
             url = Sender.FixUrl(url);
             Task<HttpResponseMessage> task = Sender.client.PostAsync(url,
                 (HttpContent)new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)content));
             try
             {
-                return Sender.RunTask(task);
+                return Sender.RunTaskAddHeaders(task);
             }
             catch (Exception ex)
             {
@@ -120,6 +149,26 @@ namespace Net
             if (!flag)
                 throw new TimeoutException("Timeout");
             return task.Result.Content.ReadAsStringAsync().Result;
+        }
+
+        private static string RunTaskAddHeaders(Task<HttpResponseMessage> task)
+        {
+            bool flag;
+            try
+            {
+                flag = task.Wait(Sender.WaitingTime);
+            }
+            catch (Exception ex)
+            {
+                Exception exception = ex;
+                while (exception.InnerException != null)
+                    exception = exception.InnerException;
+                throw exception;
+            }
+
+            if (!flag)
+                throw new TimeoutException("Timeout");
+            return task.Result.Content.ReadAsStringAsync().Result + "|" + task.Result.Headers.ToString();
         }
 
         private static string FixUrl(string url) =>
