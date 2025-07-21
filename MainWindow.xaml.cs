@@ -817,15 +817,15 @@ namespace TypeB
 
                 /*
                 //更新实时tips
-                if (Config.GetBool("增强键准提示"))
+                if (Config.GetBool("增强速度提示"))
                 {
-                    if (double.IsNaN(Score.GetAccuracy()))
+                    if (double.IsNaN(Score.GetValidSpeed()))
                     {
                         SldZoom.Background = null;
                     }
                     else
                     {
-                        int acc = (int)(Score.GetAccuracy() * 100) - 94;
+                        int acc = (int)(Score.GetValidSpeed() * 100) - 94;
 
                         if (acc < 0) acc = 0;
                         if (acc >5) acc = 5;
@@ -879,31 +879,45 @@ namespace TypeB
                     if (ScrollCondition)
                         ScDisplay.ScrollToVerticalOffset(offset);
 
-                    //跟随
-                    if (!Config.GetBool("增强键准提示"))
+                    //跟随显示提示
+                    bool showAccuracy = Config.GetBool("增强键准提示") && !double.IsNaN(Score.GetAccuracy());
+                    bool showSpeed = Config.GetBool("增强速度提示") && !double.IsNaN(Score.GetValidSpeed());
+                    
+                    if (!showAccuracy && !showSpeed)
                     {
                         if (TbAcc.Visibility == Visibility.Visible)
                             TbAcc.Visibility = Visibility.Hidden;
                     }
-                    else if (double.IsNaN(Score.GetAccuracy()))
-                    {
-                        if (TbAcc.Visibility == Visibility.Visible)
-                            TbAcc.Visibility = Visibility.Hidden;
-                    }
-                
                     else
                     {
                         if (TbAcc.Visibility == Visibility.Hidden)
                             TbAcc.Visibility = Visibility.Visible;
+                        
                         double AccLeft = TextInfo.Blocks[NextBlockIndex].TranslatePoint(new Point(0, 0), TextInfo.Blocks[0]).X + TextInfo.Blocks[NextBlockIndex].ActualWidth / 3;
                         double AccTop = TextInfo.Blocks[NextBlockIndex].TranslatePoint(new Point(0, 0), TextInfo.Blocks[0]).Y + TextInfo.Blocks[NextBlockIndex].ActualHeight - offset;
                         Canvas.SetTop(TbAcc, AccTop);
                         Canvas.SetLeft(TbAcc, AccLeft);
-                        TbAcc.Text = (100 * Score.GetAccuracy()).ToString("F2");
-
                         
-                        TbAcc.Foreground = Colors.GetAccColor(Score.GetAccuracy());
-        
+                        // 根据启用的功能显示不同内容
+                        if (showAccuracy && showSpeed)
+                        {
+                            // 两个功能都启用，显示组合信息
+                            TbAcc.Text = $"{Score.GetValidSpeed():F0},{(100 * Score.GetAccuracy()):F1}%";
+                            // 使用速度颜色作为主色调
+                            TbAcc.Foreground = Colors.GetSpeedColor(Score.GetValidSpeed());
+                        }
+                        else if (showSpeed)
+                        {
+                            // 只显示速度
+                            TbAcc.Text = Score.GetValidSpeed().ToString("F2");
+                            TbAcc.Foreground = Colors.GetSpeedColor(Score.GetValidSpeed());
+                        }
+                        else if (showAccuracy)
+                        {
+                            // 只显示准确率
+                            TbAcc.Text = (100 * Score.GetAccuracy()).ToString("F2");
+                            TbAcc.Foreground = Colors.GetAccColor(Score.GetAccuracy());
+                        }
                     }
 
                     
@@ -1179,6 +1193,7 @@ namespace TypeB
             "极速密码", "",
             "禁止F3重打", "否",
             "增强键准提示", "否",
+            "增强速度提示", "否",
                 "盲打模式", "否",
                 "看打模式", "否",
                 "字体", "#霞鹜文楷 GB 屏幕阅读版",

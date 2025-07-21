@@ -48,6 +48,31 @@ namespace TypeB
             return Levels[index];
         }
 
+        public static SolidColorBrush GetSpeedColor(double speed)
+        {
+            if (double.IsNaN(speed) || speed <= 0)
+            {
+                return Brushes.Gray;
+            }
+
+            // 根据速度值返回不同颜色
+            // 0-50: 灰色 (慢)
+            // 50-100: 紫色
+            // 100-150: 绿色
+            // 150-200: 黄色
+            // 200+: 红色 (快)
+            if (speed < 50)
+                return Brushes.Black;
+            else if (speed < 100)
+                return Brushes.Purple;
+            else if (speed < 150)
+                return Brushes.Green;
+            else if (speed < 200)
+                return Brushes.Yellow;
+            else
+                return Brushes.Crimson;
+        }
+
     
 
 
