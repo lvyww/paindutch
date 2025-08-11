@@ -88,48 +88,7 @@ namespace Net
          * wrongNum 错字数  
          * inputMethod 输入法
          */
-        public string SendScore(
-            string speed,
-            string keystrokes,
-            string maChang,
-            string typingTime,
-            string huiGai,
-            string huiChe,
-            string jianShu,
-            string jianZhun,
-            string daCi,
-            string wrongNum
-        )
-        {
-            string url = "https://www.jsxiaoshi.com/index.php/Home/Rank/uploadResult";
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            data["textTitle"] = title;
-            data["speed"] = speed;
-            data["keystrokes"] = keystrokes;
-            data["maChang"] = maChang;
-            data["wordNum"] = wordNum;
-            data["typingTime"] = typingTime;
-            data["huiGai"] = huiGai;
-            data["huiChe"] = huiChe;
-            data["jianShu"] = jianShu;
-            data["jianZhun"] = jianZhun;
-            data["repeatNum"] = "0";
-            data["daCi"] = daCi;
-            data["wrongNum"] = wrongNum;
-            data["inputMethod"] = inputMethod;
-            data["challengeFlag"] = "0";
-            data["challengeWinner"] = "";
-            data["isFirstSubmit"] = "1";
 
-            Dictionary<string, object> response = Util.DoPost(url, headers, data);
-            string msg = "请求异常";
-            if (response.ContainsKey("msg"))
-            {
-                msg = (string)response["msg"];
-            }
-
-            return msg;
-        }
 
         public string SendScore(
             double speed,

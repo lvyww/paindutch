@@ -17,6 +17,57 @@ namespace TypeB
         static public Dictionary<string, string> dicts = new Dictionary<string, string>();
         static public string Path = "config.txt";
 
+        static Config()
+        {
+            for (int i = 0; i + 1 < ConfigList.Length; i += 2)
+            {
+                dicts[ConfigList[i]] = ConfigList[i + 1];
+            }
+
+            ReadConfig();
+        }
+
+        static private string[] ConfigList = {
+            "窗口高度", "720",
+            "窗口宽度", "1000",
+            "字体大小", "30",
+            "窗体背景色", "505050",
+            "窗体字体色", "D3D3D3",
+            "跟打区背景色", "C5B28F",
+            "跟打区字体色", "000000",
+            "打对色", "95b0e3",
+            "打错色", "FF6347",
+            "显示进度条", "是",
+            //"长流用户名", "",
+            //"长流密码", "",
+            "极速用户名", "",
+            "极速密码", "",
+            "禁止F3重打", "否",
+            //"增强键准提示", "否",
+            //"增强速度提示", "否",
+            "速度跟随提示", "否",
+            "盲打模式", "否",
+            "看打模式", "否",
+            "字体", "#霞鹜文楷 GB 屏幕阅读版",
+            "行距", "0.35",
+            "允许滚动", "是",
+            //"回放功能", "否",
+            "自动发送成绩", "是",
+            "鼠标中键载文", "否",
+            "错字重打", "否",
+            "错字重复次数", "3",
+            "QQ窗口切换模式(1-2)", "1",
+            //"字集过滤与替换", "否",
+            "载文模式(1-4)", "1",
+            "成绩面板展开", "是",
+            "成绩签名", "Pain打器",
+            "成绩单屏蔽模块(逗号分隔多个)", "无",
+            "开启程序调试Log", "否",
+            "获取更新", "QQ群775237860"
+        };
+
+
+
         static public void SetDefault(params string[] args) 
         { 
             for (int i = 0; i + 1 < args.Length; i+=2)
@@ -153,7 +204,11 @@ namespace TypeB
                         {
                             string key = line_p.Substring(0, pos);
                             string value = line_p.Substring(pos + 1);
-                            dicts[key] = value;
+                            if (dicts.ContainsKey(key))
+                            {
+                                dicts[key] = value;
+                            }
+
                             break;
                         }
                     }

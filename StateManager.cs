@@ -28,7 +28,7 @@
     }
     static internal class StateManager
     {
-        static public string Version = "P250207";
+        static public string Version = "P250811";
         static public bool TextInput = false;
 
         static public bool ConfigLoaded = false;

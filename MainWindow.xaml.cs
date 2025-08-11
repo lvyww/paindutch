@@ -815,30 +815,7 @@ namespace TypeB
                         }
                     }
 
-                /*
-                //更新实时tips
-                if (Config.GetBool("增强速度提示"))
-                {
-                    if (double.IsNaN(Score.GetValidSpeed()))
-                    {
-                        SldZoom.Background = null;
-                    }
-                    else
-                    {
-                        int acc = (int)(Score.GetValidSpeed() * 100) - 94;
-
-                        if (acc < 0) acc = 0;
-                        if (acc >5) acc = 5;
-
-                        acc = 5 - acc;
-
-                        SldZoom.Background = Colors.Levels[acc];
-                    }
-
-
-                }
-
-                */
+   
 
                 if (Config.GetBool("允许滚动") || nextToType == 0)
                 {
@@ -879,7 +856,35 @@ namespace TypeB
                     if (ScrollCondition)
                         ScDisplay.ScrollToVerticalOffset(offset);
 
+
+                    //跟随显示速度
+                    bool showSpeed = Config.GetBool("速度跟随提示") && !double.IsNaN(Score.GetValidSpeed()) && Score.GetValidSpeed() > 0;
+
+
+                    if (!showSpeed)
+                    {
+                        if (TbAcc.Visibility == Visibility.Visible)
+                            TbAcc.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        if (TbAcc.Visibility == Visibility.Hidden)
+                            TbAcc.Visibility = Visibility.Visible;
+
+                        double AccLeft = TextInfo.Blocks[NextBlockIndex].TranslatePoint(new Point(0, 0), TextInfo.Blocks[0]).X + TextInfo.Blocks[NextBlockIndex].ActualWidth / 3;
+                        double AccTop = TextInfo.Blocks[NextBlockIndex].TranslatePoint(new Point(0, 0), TextInfo.Blocks[0]).Y + TextInfo.Blocks[NextBlockIndex].ActualHeight - offset;
+                        Canvas.SetTop(TbAcc, AccTop);
+                        Canvas.SetLeft(TbAcc, AccLeft);
+
+
+                        // 只显示速度
+                        TbAcc.Text = Score.GetValidSpeed().ToString("F2");
+                        TbAcc.Foreground = Colors.GetSpeedColor(Score.GetValidSpeed());
+
+                    }
+
                     //跟随显示提示
+                    /*
                     bool showAccuracy = Config.GetBool("增强键准提示") && !double.IsNaN(Score.GetAccuracy());
                     bool showSpeed = Config.GetBool("增强速度提示") && !double.IsNaN(Score.GetValidSpeed());
                     
@@ -921,7 +926,7 @@ namespace TypeB
                     }
 
                     
-
+                    */
                 }
 
 
@@ -1088,7 +1093,7 @@ namespace TypeB
         public MainWindow()
         {
             this.WindowStartupLocation = WindowStartupLocation.Manual;
-            InitCfg();
+            // InitCfg();
 
             double left = Config.GetDouble("窗口坐标X");
             double top = Config.GetDouble("窗口坐标Y");
@@ -1166,63 +1171,6 @@ namespace TypeB
 
         }
 
-        private void ShowTodayStats()
-        {
-
-        }
-
-
-        private void InitCfg()
-        {
-
-            Config.SetDefault
-            (
-                "窗口高度", "720",
-                "窗口宽度", "1000",
-                "字体大小", "30",
-              "窗体背景色", "505050",
-            "窗体字体色", "D3D3D3",
-            "跟打区背景色", "C5B28F",
-            "跟打区字体色", "000000",
-            "打对色", "95b0e3",
-            "打错色", "FF6347",
-             "显示进度条", "是",
-            "长流用户名", "",
-            "长流密码", "",
-             "极速用户名", "",
-            "极速密码", "",
-            "禁止F3重打", "否",
-            "增强键准提示", "否",
-            "增强速度提示", "否",
-                "盲打模式", "否",
-                "看打模式", "否",
-                "字体", "#霞鹜文楷 GB 屏幕阅读版",
-                "行距", "0.35",
-                "允许滚动", "是",
-                //          "回放功能", "否",
-                "自动发送成绩", "是",
-
-                "鼠标中键载文", "否",
-                "错字重打", "是",
-                "错字重复次数", "3",
-                "QQ窗口切换模式(1-2)", "1",
-                 //               "字集过滤与替换", "否",
-                 "载文模式(1-4)", "1",
-                "成绩面板展开", "是",
-                "成绩签名", "Pain打器",
-                "成绩单屏蔽模块(逗号分隔多个)", "无",
-                "开启程序调试Log", "否",
-                "获取更新", "QQ群775237860"
-            );
-
-
-            Config.ReadConfig();
-            //   TxtWrong.ReadConfig();
-            //   TxtBack.ReadConfig();
-            //   TxtCorrection.ReadConfig();
-
-
-        }
 
         private void InitFontFamilySelector()
         {
@@ -1727,7 +1675,10 @@ namespace TypeB
             {
            //     cs.SendScore((int)Score.GetBacks(), (int)Score.GetCorrection(), Score.GetAccuracy() * 100.0, Score.KPW, Score.LRRatio * 100.0, Score.HitRate, Score.Wrong, Score.TotalWordCount, Score.GetChoose(), Score.GetValidSpeed(), Score.Time.TotalSeconds, Score.GetCiRatio() * 100.0);
              //   jbs.SendScore(Score.GetValidSpeed().ToString("F2"), Score.HitRate.ToString("F2"), Score.KPW.ToString("F2"), Score.Time.TotalSeconds.ToString("F2"), Score.GetCorrection().ToString("F0"), "0", Score.GetHit().ToString("F0"), Score.GetAccuracy().ToString("F2"), Score.GetCiRatio().ToString("F2"), Score.Wrong.ToString("F0"));
-                jbs.SendScore(Score.GetValidSpeed(), Score.HitRate, Score.KPW, Score.Time, (int)Score.GetCorrection(), 0, (int)Score.GetHit(), Score.GetAccuracy(), Score.GetCiRatio(), Score.Wrong, Config.GetString("成绩签名"));
+                if (Config.GetString("成绩签名") == "Pain打器")
+                    jbs.SendScore(Score.GetValidSpeed(), Score.HitRate, Score.KPW, Score.Time, (int)Score.GetCorrection(), 0, (int)Score.GetHit(), Score.GetAccuracy(), Score.GetCiRatio(), Score.Wrong, "");
+                else
+                    jbs.SendScore(Score.GetValidSpeed(), Score.HitRate, Score.KPW, Score.Time, (int)Score.GetCorrection(), 0, (int)Score.GetHit(), Score.GetAccuracy(), Score.GetCiRatio(), Score.Wrong, Config.GetString("成绩签名"));
 
 
             }
